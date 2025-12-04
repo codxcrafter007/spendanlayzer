@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Track and analyze your daily expenses offline">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Spend Analyzer">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Spend Analyzer</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <h1 class="logo">💰 Spend Analyzer</h1>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="container">
+        <!-- Summary Cards -->
+        <section id="summarySection" class="summary-section">
+          <div class="summary-cards">
+            <div class="summary-card">
+              <div class="summary-label">Today</div>
+              <div class="summary-value" id="todayTotal">₹0</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">This Week</div>
+              <div class="summary-value" id="weekTotal">₹0</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">This Month</div>
+              <div class="summary-value" id="monthTotal">₹0</div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Top Category</div>
+              <div class="summary-value" id="topCategory">-</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Add Expense Form -->
+        <section class="expense-form-section">
+          <h2 class="section-title">Add Expense</h2>
+          <form id="expenseForm" class="expense-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="amount">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
+              </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                  <option value="">Select...</option>
+                  <option value="Food">🍔 Food</option>
+                  <option value="Travel">🚗 Travel</option>
+                  <option value="Bills">💡 Bills</option>
+                  <option value="Shopping">🛍️ Shopping</option>
+                  <option value="Entertainment">🎬 Entertainment</option>
+                  <option value="Health">💊 Health</option>
+                  <option value="Custom">✏️ Custom</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
+              </div>
+              <div class="form-group">
+                <label for="note">Note (Optional)</label>
+                <input type="text" id="note" name="note" placeholder="e.g., Lunch at cafe">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <span>Add Expense</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Filters -->
+        <section class="filters-section">
+          <div class="filters">
+            <div class="filter-group">
+              <label>Filter by:</label>
+              <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="today">Today</button>
+                <button class="filter-btn" data-filter="week">This Week</button>
+                <button class="filter-btn" data-filter="month">This Month</button>
+                <button class="filter-btn" data-filter="year">This Year</button>
+              </div>
+            </div>
+            <div class="filter-group">
+              <select id="categoryFilter" class="category-filter">
+                <option value="all">All Categories</option>
+                <option value="Food">🍔 Food</option>
+                <option value="Travel">🚗 Travel</option>
+                <option value="Bills">💡 Bills</option>
+                <option value="Shopping">🛍️ Shopping</option>
+                <option value="Entertainment">🎬 Entertainment</option>
+                <option value="Health">💊 Health</option>
+                <option value="Custom">✏️ Custom</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="charts-section">
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h3 class="chart-title">Category Breakdown</h3>
+              <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="chart-title">Spending Trend</h3>
+              <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Expense List -->
+        <section class="expense-list-section">
+          <div class="section-header">
+            <h2 class="section-title">Recent Expenses</h2>
+            <div class="section-actions">
+              <button id="exportBtn" class="btn btn-outline">
+                📥 Export CSV
+              </button>
+              <button id="resetBtn" class="btn btn-danger">
+                🗑️ Reset All
+              </button>
+            </div>
+          </div>
+          <div id="expenseList" class="expense-list">
+            <!-- Expenses will be dynamically inserted here -->
+          </div>
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>No expenses yet</h3>
+            <p>Start tracking by adding your first expense above</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>All data stored locally on your device • No tracking • No ads</p>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
